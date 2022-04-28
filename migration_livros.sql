@@ -91,15 +91,18 @@ SELECT a.descricao, count(l.livro_id)
     Faço as consultas para responder as seguintes questões
     Recuperar o nome das editoras são referenciados 
 */
-SELECT e.nome
-    from livro l inner join editora e on e.editora_id = l.editora
-    /* pegar nome da editora */
-    select e.nome
-    from editora e
-    inner join (
-        select e.editora_id
-        from livro l inner join editora e on e.editora_id = l.editora
-        group by e.editora_id
-        having count(l.editora) >= 2
-    ) as subquery on subquery.editora_id = e.editora_id
-    order by e.nome desc;
+select 
+    editora.name
+    from livro
+    inner join editora e on e.editora_id = livro.editora
+    group by editora.nome
+
+/* 
+    Recuperar a descri¸c˜ao e a sigla dos assuntos que s˜ao
+*/
+
+select 
+    a.sigla, a.descricao
+    from livro 
+    inner join assunto a on a.assunto_id = livro.assunto
+    group by a.sigla, a.descricao 

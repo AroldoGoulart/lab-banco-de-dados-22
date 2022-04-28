@@ -53,6 +53,76 @@ insert into prouto_venda (prod_id, venda_id, quantidade) values (1, 1, 1);
 insert into prouto_venda (prod_id, venda_id, quantidade) values (2, 2, 2);
 insert into prouto_venda (prod_id, venda_id, quantidade) values (3, 3, 3);
 
+
+
+/*
+    A quantidade total de vendas por cada cliente, sendo que deve
+    aparecer o nome do cliente, o total ordenado por aquele que
+    comprou mais para o que comprou menos
+*/
+
+
+/* o que mais comprou */
+select cliente_id, cliente_nome, (pv.quantidade) as compras from cliente
+    inner join venda v on cliente_id = v.cliente_venda
+    inner join prouto_venda pv on v.venda_id = pv.venda_id
+    inner join produto p on pv.prod_id = p.prod_id
+    order by compras desc;
+
+/* oque mais gastou ordenado */
+select cliente_id, cliente_nome, (pv.quantidade * p.prod_preco) as total from cliente
+    inner join venda v on cliente_id = v.cliente_venda
+    inner join prouto_venda pv on v.venda_id = pv.venda_id
+    inner join produto p on pv.prod_id = p.prod_id
+    order by total desc;
+
+/* 
+    quantidade de produtos por cliente
+*/
+select cliente_nome, pv.quantidade as quantidade, p.prod_name as item  from cliente
+    inner join venda v on cliente_id = v.cliente_venda
+    inner join prouto_venda pv on v.venda_id = pv.venda_id
+    inner join produto p on pv.prod_id = p.prod_id
+
+/*
+    A quantidade total de vendas por cada cliente, sendo que deve
+    aparecer o nome do cliente, o total ordenado por aquele que
+    comprou mais para o que comprou menos, desde que a
+    quantidade compras seja maior do que 1
+*/
+select cliente_nome, count(pv.venda_id) as vendas from cliente
+    inner join venda v on cliente_id = v.cliente_venda
+    inner join prouto_venda pv on v.venda_id = pv.venda_id
+    inner join produto p on pv.prod_id = p.prod_id
+    group by cliente_nome
+    having count(pv.venda_id) > 1
+    order by vendas desc;
+
+/*
+    Crie um relat´orio que mostre a quantidade o total de cada
+    produto comprado por cada cliente, desde que a quantidade de
+    produtos comprados seja maior do que 1.
+    Ex: Cliente1, 10, L´apis
+*/
+select cliente_nome, count(pv.venda_id) as vendas, p.prod_name from cliente
+    inner join venda v on cliente_id = v.cliente_venda
+    inner join prouto_venda pv on v.venda_id = pv.venda_id
+    inner join produto p on pv.prod_id = p.prod_id
+    group by cliente_nome, p.prod_name
+    having count(pv.venda_id) > 1
+    order by vendas desc;
+
+/*
+    Precisamos saber quais s˜ao os c´odigos e os nomes dos
+    produtos que foram vendidos
+*/
+select produto.prod_id, produto.prod_name from produto
+    inner join prouto_venda pv on produto.prod_id = pv.prod_id
+    inner join venda v on pv.venda_id = v.venda_id
+
+/*
+    Recupere as informa¸c˜oes do cliente que mais gastou na loja
+*/
 select cliente_id, c.cliente_nome, prod_name, (quantidade * prod_preco) as total from venda
     inner join prouto_venda pv on venda.venda_id = pv.venda_id
     inner join produto p on pv.prod_id = p.prod_id
