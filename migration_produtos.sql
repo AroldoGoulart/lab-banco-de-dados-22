@@ -30,3 +30,4 @@ select prod_name, prod_preco
         select max(prod_preco) 
         from produtos
     );
+    

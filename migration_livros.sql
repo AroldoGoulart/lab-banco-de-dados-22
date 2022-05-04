@@ -30,6 +30,7 @@ insert into editora (nome) values ('FTD');
 insert into assunto (sigla, descricao) values ('L', 'Literatura');
 insert into assunto (sigla, descricao) values ('P', 'Poesia');
 insert into assunto (sigla, descricao) values ('C', 'Ciência');
+insert into assunto (sigla, descricao) values ('Fic', 'Ficção');
 
 /* Criar livros de literatura, poesia e ciencia com titulo reais */
 insert into livro (titulo, editora, assunto) values ('O Homem de Ferro', 1, 1);
@@ -106,3 +107,42 @@ select
     from livro 
     inner join assunto a on a.assunto_id = livro.assunto
     group by a.sigla, a.descricao 
+
+
+
+insert into assunto (sigla, descricao) values ('Fic', 'Ficção');
+select * from assunto;
+insert into livro (titulo, editora, assunto) values ('O Guia do Mochileiro das Galáxias (fic)', 1, 3);
+
+/*
+numero de livro por editora''
+Recuperar o nome das editoras s˜ao referenciados que possuem pelo
+menos 2 livros, ou que seus livros tenham o assunto ’Fic¸c˜ao’
+*/
+select nome, count(livro.livro_id) from editora  
+    inner join livro on livro.editora = editora.editora_id
+    group  by nome
+    having count(livro.editora) >= 2
+    union 
+        select nome from editora
+            inner join livro on livro.editora = editora.editora_id
+            inner join assunto on assunto.assunto_id = livro.assunto
+            group by nome
+            where assunto.sigla = 'Fic'
+            
+/*
+Recuperar a descri¸c˜ao e a sigla dos assuntos que s˜ao referenciados por
+pelo menos 1 livro, ou que tenham a editora ’Pearson’
+*/
+
+select a.sigla, a.descricao  from assunto a
+    inner join livro on livro.assunto = a.assunto_id
+    inner join editora on editora.editora_id = livro.editora
+    group by a.sigla, a.descricao
+    having count(livro.assunto) >= 1
+    union
+        select a.sigla, a.descricao  from assunto a
+            inner join livro on livro.assunto = a.assunto_id
+            inner join editora on editora.editora_id = livro.editora
+            where editora.nome = 'Pearson'
+
